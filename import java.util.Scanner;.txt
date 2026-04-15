@@ -1,0 +1,92 @@
+import java.util.Scanner;
+
+// ===== ABSTRACTION =====
+abstract class WebsiteScanner {
+    abstract void scan(String url);
+}
+
+// ===== ENCAPSULATION =====
+class Website {
+    private String url;
+
+    public Website(String url) {
+        this.url = url;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+}
+
+// ===== INHERITANCE + POLYMORPHISM =====
+class BasicScanner extends WebsiteScanner {
+
+    @Override
+    void scan(String url) {
+        System.out.println("\nScanning URL: " + url);
+
+        if (url.contains("login") ||
+            url.contains("verify") ||
+            url.contains("bank") ||
+            url.contains("update")) {
+
+            System.out.println("⚠ WARNING: Possible Phishing Website!");
+        } else {
+            System.out.println("✔ Safe Website");
+        }
+    }
+}
+
+// ===== ADVANCED SCANNER (Polymorphism) =====
+class AdvancedScanner extends WebsiteScanner {
+
+    @Override
+    void scan(String url) {
+        System.out.println("\n[Advanced Scan Started]");
+
+        int riskScore = 0;
+
+        if (url.contains("login")) riskScore += 30;
+        if (url.contains("verify")) riskScore += 30;
+        if (url.contains("bank")) riskScore += 25;
+        if (url.contains("http://")) riskScore += 15;
+
+        System.out.println("Risk Score: " + riskScore + "/100");
+
+        if (riskScore >= 50) {
+            System.out.println("⚠ High Risk Phishing Website!");
+        } else {
+            System.out.println("✔ Low Risk / Safe");
+        }
+    }
+}
+
+// ===== MAIN CLASS =====
+public class Main {
+    public static void main(String[] args) {
+
+        Scanner sc = new Scanner(System.in);
+
+        System.out.print("Enter website URL: ");
+        String url = sc.nextLine();
+
+        Website site = new Website(url);
+
+        System.out.println("\nChoose Scanner:");
+        System.out.println("1. Basic Scanner");
+        System.out.println("2. Advanced Scanner");
+
+        int choice = sc.nextInt();
+
+        WebsiteScanner scanner;
+
+        // Polymorphism (runtime decision)
+        if (choice == 1) {
+            scanner = new BasicScanner();
+        } else {
+            scanner = new AdvancedScanner();
+        }
+
+        scanner.scan(site.getUrl());
+    }
+}
